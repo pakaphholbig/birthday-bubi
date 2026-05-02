@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎁 Something special for you...</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; }
+    button { touch-action: manipulation; }
+
+    /* ─── Screens ─── */
+    .screen {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      transition: opacity 0.55s ease, transform 0.55s ease;
+      z-index: 2;
+    }
+    .screen.hidden  { opacity: 0; pointer-events: none; transform: scale(0.96); }
+    .screen.gone    { display: none; }
+
+    /* ─── Stars ─── */
+    #stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .star {
+      position: absolute; border-radius: 50%; background: #fff;
+      animation: twinkle var(--d) ease-in-out infinite alternate; opacity: 0;
+    }
+    @keyframes twinkle { 0%{opacity:.08} 100%{opacity:.75} }
+
+    /* ─── Confetti ─── */
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+
+    /* ══════════════════════════════════
+       SCREEN 0 — Mysterious hook
+    ══════════════════════════════════ */
+    #s0 { background: radial-gradient(ellipse at 50% 60%, #18182a 0%, #05050a 72%); }
+    .s0-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .ptcl {
+      position: absolute; border-radius: 50%; background: #c8c8e0;
+      animation: rise var(--dur) ease-in infinite; opacity: 0;
+    }
+    @keyframes rise {
+      0%   { transform: translateY(0) scale(0); opacity: 0; }
+      8%   { opacity: .55; transform: scale(1); }
+      90%  { opacity: .15; }
+      100% { transform: translateY(-110vh) scale(.4); opacity: 0; }
+    }
+    #s0 .eyebrow {
+      color: rgba(255,255,255,.4); font-size: .78rem;
+      letter-spacing: 4px; text-transform: uppercase;
+      animation: blink 2.2s ease-in-out infinite; position: relative; z-index: 1;
+      margin-bottom: 18px;
+    }
+    @keyframes blink { 0%,100%{opacity:.35} 50%{opacity:.9} }
+    #s0 h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2.2rem, 7vw, 3.6rem);
+      color: #e8e8f4; text-align: center; line-height: 1.25;
+      text-shadow: 0 0 60px rgba(180, 180, 230, .5);
+      position: relative; z-index: 1; margin-bottom: 10px;
+    }
+    #s0 .sub { color: rgba(255,255,255,.45); font-size: .9rem; position: relative; z-index: 1; margin-bottom: 52px; }
+
+    .btn-glow {
+      padding: 18px 52px; border-radius: 99px; border: none; cursor: pointer;
+      background: linear-gradient(135deg, #52526e, #8888a8);
+      color: #f0f0f8; font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 700;
+      letter-spacing: .5px; position: relative; z-index: 1;
+      box-shadow: 0 8px 36px rgba(130, 130, 180, .5);
+      animation: glow-pulse 2s ease-in-out infinite;
+      transition: transform .2s;
+    }
+    .btn-glow:hover  { transform: translateY(-4px) scale(1.05); }
+    .btn-glow:active { transform: scale(.97); }
+    @keyframes glow-pulse {
+      0%,100%{ box-shadow: 0 8px 36px rgba(130,130,180,.5); }
+      50%    { box-shadow: 0 14px 56px rgba(180,180,220,.7), 0 0 90px rgba(120,120,170,.3); }
+    }
+
+    /* ══════════════════════════════════
+       SCREEN 1 — Drake meme troll
+    ══════════════════════════════════ */
+    #s1 { background: #ebebeb; }
+    .meme-eyebrow {
+      font-size: .7rem; letter-spacing: 3px; text-transform: uppercase;
+      color: #aaa; margin-bottom: 14px;
+    }
+    .drake-wrap {
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,.15);
+      max-width: 480px; width: 90vw; margin-bottom: 28px;
+    }
+    .drake-row {
+      display: flex; align-items: center; background: #fff;
+      padding: 18px 20px; gap: 18px;
+      border-bottom: 2px solid #ebebeb;
+    }
+    .drake-row:last-child { border-bottom: none; }
+    .d-emoji { font-size: 2.8rem; width: 64px; flex-shrink: 0; text-align: center; }
+    .d-text  { font-size: .92rem; font-weight: 500; color: #222; line-height: 1.45; }
+    .tag {
+      display: inline-block; font-size: .68rem; font-weight: 700;
+      padding: 2px 10px; border-radius: 99px; margin-left: 8px;
+    }
+    .tag-no  { background: #e8e8e8; color: #666; }
+    .tag-yes { background: #dddde8; color: #44446a; }
+
+    .dark-btn {
+      background: #111; color: #fff; border: none; border-radius: 14px;
+      padding: 14px 40px; font-family: 'Poppins', sans-serif;
+      font-size: .95rem; font-weight: 600; cursor: pointer;
+      transition: transform .2s, background .2s;
+    }
+    .dark-btn:hover { transform: scale(1.05); background: #333; }
+
+    .cat-meme {
+      max-width: 260px; width: 72vw;
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,.15);
+      margin-bottom: 20px; position: relative;
+    }
+    .cat-meme img { width: 100%; display: block; }
+    .cat-meme-caption {
+      background: #fff; padding: 8px 14px;
+      font-size: .8rem; font-weight: 600; color: #333;
+      text-align: center; border-top: 1px solid #eee;
+    }
+
+    /* ══════════════════════════════════
+       SCREEN 2 — Windows XP fake error
+    ══════════════════════════════════ */
+    #s2 {
+      background: #008080;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.04) 2px, rgba(0,0,0,.04) 4px);
+    }
+    .s2-label { color: rgba(255,255,255,.35); font-size: .75rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 18px; }
+
+    .xp-win {
+      background: #d4d0c8; border: 2px solid;
+      border-color: #fff #848284 #848284 #fff;
+      box-shadow: 2px 2px 0 #000;
+      width: min(440px, 90vw);
+    }
+    .xp-bar {
+      background: linear-gradient(180deg, #0a246a 0%, #a6caf0 5%, #0a246a 7%, #1754ce 100%);
+      padding: 4px 6px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .xp-title-text {
+      color: #fff; font-size: .74rem; font-weight: 700;
+      font-family: Tahoma, sans-serif; display: flex; align-items: center; gap: 6px;
+    }
+    .xp-ctrls { display: flex; gap: 2px; }
+    .xp-ctrl {
+      width: 20px; height: 18px; background: #d4d0c8;
+      border: 1px solid; border-color: #fff #848284 #848284 #fff;
+      font-size: .7rem; font-weight: 900; display: flex;
+      align-items: center; justify-content: center; cursor: pointer;
+      font-family: Tahoma, sans-serif;
+    }
+    .xp-body { padding: 20px 22px 18px; }
+    .xp-row  { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+    .xp-ico  { font-size: 2.2rem; flex-shrink: 0; margin-top: 2px; }
+    .xp-txt  { font-family: Tahoma, sans-serif; font-size: .8rem; color: #000; line-height: 1.55; }
+    .xp-txt strong { font-weight: 700; }
+    .xp-txt code   { background: #ebe8df; padding: 1px 5px; font-size: .75rem; }
+
+    .xp-prog-outer {
+      background: #fff; border: 1px solid #848284;
+      height: 22px; overflow: hidden; margin-bottom: 5px; position: relative;
+    }
+    .xp-prog-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(180deg, #4499f1 0%, #1a5bdb 100%);
+      transition: width .12s linear;
+    }
+    .xp-prog-label {
+      font-family: Tahoma, sans-serif; font-size: .7rem;
+      color: #666; text-align: center; margin-bottom: 16px;
+    }
+    .xp-btn-row { display: flex; justify-content: center; gap: 8px; }
+    .xp-act {
+      background: #d4d0c8; border: 2px solid;
+      border-color: #fff #848284 #848284 #fff;
+      padding: 4px 0; min-width: 80px; text-align: center;
+      font-family: Tahoma, sans-serif; font-size: .8rem; cursor: pointer;
+    }
+    .xp-act:active { border-color: #848284 #fff #fff #848284; }
+    .xp-act:disabled { color: #848284; cursor: default; }
+
+    /* ══════════════════════════════════
+       SCREEN 3 — Are you ready? (no-btn runs)
+    ══════════════════════════════════ */
+    #s3 { background: linear-gradient(135deg, #0c0c12 0%, #1a1a2a 100%); }
+    #s3 .big-emoji { font-size: 5rem; margin-bottom: 16px; }
+    #s3 h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2rem, 6vw, 3rem); color: #e8e8f4;
+      margin-bottom: 10px; text-align: center;
+    }
+    #s3 .sub2 { color: rgba(255,255,255,.5); font-size: .9rem; margin-bottom: 44px; text-align: center; }
+
+    .yes-btn {
+      background: linear-gradient(135deg, #52526e, #8888a8);
+      color: #f0f0f8; border: none; border-radius: 99px;
+      padding: 16px 44px; font-family: 'Poppins', sans-serif;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      box-shadow: 0 8px 24px rgba(120,120,170,.4);
+      transition: transform .2s;
+    }
+    .yes-btn:hover { transform: scale(1.06); }
+
+    .no-btn {
+      position: fixed;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.6);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 99px; padding: 16px 40px;
+      font-family: 'Poppins', sans-serif; font-size: 1rem;
+      font-weight: 600; cursor: pointer; white-space: nowrap;
+      transition: none; z-index: 99;
+    }
+
+    /* ══════════════════════════════════
+       SCREEN 4 — The real birthday page
+    ══════════════════════════════════ */
+    #s4 {
+      background: linear-gradient(155deg, #0c0c12 0%, #18182a 40%, #22222e 100%);
+      overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      align-items: flex-start; justify-content: flex-start;
+      padding: 48px 20px 100px;
+    }
+    .real-wrap { max-width: 700px; width: 100%; margin: 0 auto; }
+
+    /* photo hero */
+    .photo-hero { text-align: center; margin-bottom: 40px; }
+    .photo-ring {
+      width: 190px; height: 190px; border-radius: 50%;
+      background: conic-gradient(#4a4a68, #8888a8, #d4d4e8, #f0f0f8, #d4d4e8, #8888a8, #4a4a68);
+      padding: 4px; margin: 0 auto 22px;
+      animation: spin-ring 6s linear infinite;
+      box-shadow: 0 0 56px rgba(160,160,210,.35);
+    }
+    @keyframes spin-ring { to { transform: rotate(360deg); } }
+    .photo-inner {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: rgba(20,20,36,.9);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; overflow: hidden;
+    }
+    .photo-inner img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .ph-icon  { font-size: 3.2rem; }
+    .ph-label {
+      font-size: .62rem; color: rgba(255,255,255,.35);
+      letter-spacing: 1px; text-align: center; padding: 0 10px; margin-top: 4px;
+      font-family: monospace; text-transform: uppercase;
+    }
+
+    .real-wrap h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2.4rem, 7vw, 4rem);
+      background: linear-gradient(90deg, #c4c4dc, #f0f0f8, #c4c4dc);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: shimmer 3.5s linear infinite;
+      text-align: center; line-height: 1.18; margin-bottom: 6px;
+    }
+    @keyframes shimmer { to { background-position: 200% center; } }
+    .bounce-cake {
+      font-size: 3rem; display: block; text-align: center;
+      animation: bounce 1.5s ease-in-out infinite; margin: 6px 0 36px;
+    }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+
+    /* section cards */
+    .card {
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 24px; padding: 32px; margin-bottom: 22px;
+    }
+    .card-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.75rem; color: #d4d4e8;
+      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+    }
+
+    /* memory grid */
+    .mem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .mem-card {
+      border-radius: 16px; overflow: hidden; position: relative;
+      aspect-ratio: 1; cursor: pointer;
+      border: 1px solid rgba(255,255,255,.09);
+      transition: transform .25s;
+    }
+    .mem-card:hover { transform: scale(1.04); }
+    .mem-card img   { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mem-ph {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+    }
+    .mem-ph .icon { font-size: 2.5rem; }
+    .mem-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,.72));
+      padding: 22px 12px 10px;
+      color: #fff; font-size: .76rem; text-align: center; font-weight: 500;
+      font-family: monospace; letter-spacing: .5px;
+    }
+
+    /* letter */
+    .letter { font-size: .98rem; line-height: 1.9; color: rgba(255,255,255,.82); font-weight: 300; }
+    .letter strong { color: #dcdcec; font-weight: 600; }
+
+    /* video */
+    .video-wrap {
+      width: 100%; border-radius: 16px; overflow: hidden;
+      background: #000; position: relative;
+    }
+    .video-wrap video {
+      width: 100%; display: block; border-radius: 16px;
+      max-height: 480px; object-fit: contain;
+    }
+
+    /* wish */
+    .wish-card { text-align: center; }
+    .wish-icons { font-size: 2.4rem; letter-spacing: 8px; margin-bottom: 20px; }
+    .wish-card h2 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: #e8e8f4; margin-bottom: 14px; }
+    .wish-card p  { font-size: .97rem; color: rgba(255,255,255,.68); line-height: 1.8; font-weight: 300; max-width: 480px; margin: 0 auto 32px; }
+
+    .candle-btn {
+      background: linear-gradient(135deg, #52526e, #9090b0);
+      color: #f0f0f8; border: none; border-radius: 99px;
+      padding: 17px 46px; font-family: 'Poppins', sans-serif;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 8px 28px rgba(130,130,180,.4);
+      transition: transform .2s;
+    }
+    .candle-btn:hover  { transform: translateY(-3px) scale(1.05); }
+    .candle-btn:active { transform: scale(.97); }
+
+    .footer-note { text-align: center; color: rgba(255,255,255,.22); font-size: .75rem; margin-top: 44px; letter-spacing: 1px; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #18182a; border: 1px solid rgba(255,255,255,.15);
+      color: #e4e4f0; padding: 12px 28px; border-radius: 99px;
+      font-size: .85rem; z-index: 9999;
+      transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .4s;
+      opacity: 0; pointer-events: none;
+      max-width: 90vw; text-align: center;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      .card { padding: 22px 18px; }
+      .xp-body { padding: 16px 14px 14px; }
+      .xp-act  { padding: 10px 0; font-size: .82rem; }
+      .wish-icons { font-size: 1.8rem; letter-spacing: 4px; }
+      .card-title { font-size: 1.5rem; }
+      #s4 { padding: 36px 14px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="stars"></div>
+<canvas id="confetti-canvas"></canvas>
+<div class="toast" id="toast"></div>
+
+<!-- ══ SCREEN 0: Hook ══ -->
+<div id="s0" class="screen">
+  <div class="s0-particles" id="ptcls"></div>
+  <p class="eyebrow">I made something for you...</p>
+  <h1>🎁 There's a surprise<br>waiting for you</h1>
+  <p class="sub" style="margin-bottom:52px;">Click to find out what it is 👀</p>
+  <button class="btn-glow" onclick="goTo(1)">Click here ✨</button>
+</div>
+
+<!-- ══ SCREEN 1: Drake meme ══ -->
+<div id="s1" class="screen hidden">
+  <p class="meme-eyebrow">🎂 Your birthday gift</p>
+  <div class="drake-wrap">
+    <div class="drake-row">
+      <div class="d-emoji">😒❌</div>
+      <div class="d-text">
+        Just sending a "Happy Birthday" text like a normal person
+        <span class="tag tag-no">nah</span>
+      </div>
+    </div>
+    <div class="drake-row">
+      <div class="d-emoji">😏✅</div>
+      <div class="d-text">
+        Making her click through 4 screens, a fake Windows error, and a running button — before seeing the actual gift
+        <span class="tag tag-yes">this</span>
+      </div>
+    </div>
+  </div>
+  <div class="cat-meme">
+    <img src="images/cat_crymeme.WEBP" alt="crying cat meme">
+    <div class="cat-meme-caption">me waiting for you to get to the real gift 😭</div>
+  </div>
+  <button class="dark-btn" onclick="goTo(2)">ok ok fine... next →</button>
+</div>
+
+<!-- ══ SCREEN 2: Windows XP fake error ══ -->
+<div id="s2" class="screen hidden">
+  <p class="s2-label">Loading your birthday gift...</p>
+  <div class="xp-win">
+    <div class="xp-bar">
+      <div class="xp-title-text">⚠️&nbsp; Birthday.exe</div>
+      <div class="xp-ctrls">
+        <div class="xp-ctrl">_</div>
+        <div class="xp-ctrl">□</div>
+        <div class="xp-ctrl" style="color:#c00">✕</div>
+      </div>
+    </div>
+    <div class="xp-body">
+      <div class="xp-row">
+        <div class="xp-ico">💥</div>
+        <div class="xp-txt">
+          <strong>Birthday.exe has encountered a fatal error</strong><br><br>
+          Exception: <code>TOO_MUCH_LOVE_DETECTED</code><br><br>
+          The gift was too big to fit on screen.<br>
+          Engineers are compressing <strong>∞ feelings</strong> into one page…
+        </div>
+      </div>
+      <div class="xp-prog-outer">
+        <div class="xp-prog-fill" id="xp-fill"></div>
+      </div>
+      <div class="xp-prog-label" id="xp-msg">Initializing love.dll…</div>
+      <div class="xp-btn-row">
+        <button class="xp-act" id="xp-ok" onclick="goTo(3)" disabled>OK</button>
+        <button class="xp-act" id="xp-cancel" onclick="cancelXP()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 3: Are you ready? ══ -->
+<div id="s3" class="screen hidden">
+  <div class="big-emoji">🥹</div>
+  <h2>Okay… for real this time</h2>
+  <p class="sub2">No more jokes. I promise. 💖</p>
+  <button class="yes-btn" onclick="goToFinal()">Yes, I'm ready! 🎂</button>
+  <button class="no-btn" id="no-btn">No 😤</button>
+</div>
+
+<!-- ══ SCREEN 4: The real gift ══ -->
+<div id="s4" class="screen hidden">
+  <div class="real-wrap">
+
+    <!-- Photo -->
+    <div class="photo-hero">
+      <div class="photo-ring">
+        <div class="photo-inner" id="photo-inner">
+          <img src="images/IMG_5699.JPG" alt="My love">
+        </div>
+      </div>
+      <h1>Happy Birthday,<br>Bubi 🌸</h1>
+      <span class="bounce-cake">🎂</span>
+    </div>
+
+    <!-- Letter -->
+    <div class="card">
+      <div class="card-title">💌 A letter for you</div>
+      <!-- [PLACEHOLDER] Customize this message -->
+      <p class="letter">
+        Today is <strong>Bubi's day</strong> ngub. I week nee ngarn yoong mak loei chai wela
+        narn gwa t kids nid nueng gwa ja tum sed ngub. Bubi yar grode i na ngub TT
+        I luv u ngub bubi yark yhu ga u pai narn2. gin arai aroi2 duai gun. bubi reeb pai tum
+        US visa laew ma Bellevue dai laew ngub!!! luv uu
+        <strong>I am so lucky that you exist, and even luckier that you're mine.</strong> 🌙
+      </p>
+    </div>
+
+    <!-- Video -->
+    <div class="card">
+      <div class="card-title">🎬 Our video</div>
+      <div class="video-wrap">
+        <!--
+          Note: .MOV plays natively on Safari/iOS.
+          For Chrome/Android, convert to .mp4 using HandBrake or iMovie.
+        -->
+        <video
+          src="images/892c6cdc-e19a-4e56-8d65-593bdbe352f1.MOV"
+          controls
+          playsinline
+          preload="metadata"
+        ></video>
+      </div>
+    </div>
+
+    <!-- Memories -->
+    <div class="card">
+      <div class="card-title">📸 Our memories</div>
+      <div class="mem-grid">
+
+        <div class="mem-card">
+          <img src="images/IMG_3989.jpg" alt="Memory">
+          <div class="mem-caption">Kode Tae Ngub bubi</div>
+        </div>
+
+        <div class="mem-card">
+          <img src="images/IMG_9581.jpg" alt="Memory">
+          <div class="mem-caption">Nong Frog</div>
+        </div>
+
+        <div class="mem-card">
+          <img src="images/IMG_4151.jpg" alt="Memory">
+          <div class="mem-caption"> Doo rai ngub</div>
+        </div>
+
+        <div class="mem-card">
+          <img src="images/5006883A-C946-4CE1-98A8-86A2448517C2.PNG" alt="Memory">
+          <div class="mem-caption">Par Bruno ma HPBD duai ngub</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Wish -->
+    <div class="card wish-card">
+      <div class="wish-icons">🎈🎁🌟💖🎊</div>
+      <h2>My wish for you</h2>
+      <p>
+        May this year bring you everything you've been dreaming of —
+        adventures that take your breath away, laughter that fills every room,
+        and all the love you deserve. I'll be right there beside you for every bit of it. 🌸
+      </p>
+      <button class="candle-btn" onclick="boom()">🕯️ Blow out the candles!</button>
+    </div>
+
+    <!-- [PLACEHOLDER] Optional: add your name or a year -->
+    <p class="footer-note">Made with 💗 just for you ngub from your Bubibaa</p>
+
+  </div>
+</div>
+
+<script>
+/* ─── Stars ─── */
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 110; i++) {
+  const s = document.createElement('div'); s.className = 'star';
+  const sz = Math.random() * 2.5 + .5;
+  s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*3+1).toFixed(1)}s;animation-delay:${(Math.random()*5).toFixed(1)}s`;
+  starsEl.appendChild(s);
+}
+
+/* ─── Screen 0 particles ─── */
+const pw = document.getElementById('ptcls');
+for (let i = 0; i < 35; i++) {
+  const p = document.createElement('div'); p.className = 'ptcl';
+  const sz = Math.random() * 4 + 1.5;
+  p.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;bottom:-10%;--dur:${(Math.random()*7+4).toFixed(1)}s;animation-delay:${(Math.random()*10).toFixed(1)}s`;
+  pw.appendChild(p);
+}
+
+/* ─── Screen transitions ─── */
+let current = 0;
+const ids = ['s0','s1','s2','s3','s4'];
+
+function goTo(n) {
+  const prev = document.getElementById(ids[current]);
+  prev.classList.add('hidden');
+  setTimeout(() => {
+    prev.classList.add('gone');
+    current = n;
+    const next = document.getElementById(ids[n]);
+    next.classList.remove('gone');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      next.classList.remove('hidden');
+      if (n === 2) startXP();
+      if (n === 3) initNoBtn();
+    }));
+  }, 550);
+}
+
+/* ─── XP loading ─── */
+const xpMsgs = [
+  'Initializing love.dll…',
+  'Loading sweetness.exe…',
+  'Compressing 365 days of memories…',
+  'ERROR: Integer overflow — too many feelings',
+  'Retrying with extra-love packet…',
+  'Installing happiness_v2.0…',
+  'Done! Loading gift… ✓',
+];
+let xpStep = 0, xpTimer;
+
+function startXP() {
+  xpStep = 0;
+  document.getElementById('xp-fill').style.width = '0%';
+  document.getElementById('xp-ok').disabled = true;
+  document.getElementById('xp-cancel').disabled = false;
+  document.getElementById('xp-msg').textContent = xpMsgs[0];
+  xpTimer = setInterval(tickXP, 850);
+}
+function tickXP() {
+  xpStep++;
+  const pct = Math.min(100, Math.round((xpStep / (xpMsgs.length - 1)) * 100));
+  document.getElementById('xp-fill').style.width = pct + '%';
+  document.getElementById('xp-msg').textContent = xpMsgs[Math.min(xpStep, xpMsgs.length - 1)];
+  if (xpStep >= xpMsgs.length - 1) {
+    clearInterval(xpTimer);
+    document.getElementById('xp-ok').disabled = false;
+  }
+}
+function cancelXP() {
+  clearInterval(xpTimer);
+  showToast('lol nice try 😂');
+  document.getElementById('xp-cancel').disabled = true;
+  document.getElementById('xp-fill').style.width = '0%';
+  document.getElementById('xp-ok').disabled = true;
+  setTimeout(startXP, 600);
+}
+
+/* ─── No-button runs away ─── */
+function initNoBtn() {
+  const btn = document.getElementById('no-btn');
+  btn.style.left = '58%';
+  btn.style.top  = '58%';
+
+  const jokes = ['Nope 😂', 'Still no 😤', 'NEVER 🏃‍♀️', 'Catch me! 😝', 'lol no 😂', 'ok fine… NO 😒', '🙅‍♀️ nope', 'Try harder 😜'];
+  let hits = 0;
+
+  function flee() {
+    const bw = btn.offsetWidth + 30, bh = btn.offsetHeight + 30;
+    const nx = bw / 2 + Math.random() * (window.innerWidth  - bw);
+    const ny = bh / 2 + Math.random() * (window.innerHeight - bh);
+    btn.style.left = nx + 'px';
+    btn.style.top  = ny + 'px';
+    btn.textContent = jokes[Math.min(hits++, jokes.length - 1)];
+    if (hits === 3) showToast('It always runs away… just like its excuses 😂');
+  }
+
+  btn.addEventListener('mouseenter', flee);
+  btn.addEventListener('touchstart', (e) => { e.preventDefault(); flee(); }, { passive: false });
+}
+
+/* ─── Go to final with confetti ─── */
+function goToFinal() {
+  goTo(4);
+  setTimeout(launchConfetti, 700);
+}
+
+/* ─── Confetti (grey/silver palette) ─── */
+const cv = document.getElementById('confetti-canvas');
+const cx = cv.getContext('2d');
+let pieces = [], cRunning = false;
+function resizeCV() { cv.width = innerWidth; cv.height = innerHeight; }
+resizeCV(); window.addEventListener('resize', resizeCV);
+const COLS = ['#8888a8','#b4b4cc','#d4d4e8','#f0f0f8','#666680','#a0a0bc','#e4e4f0','#c8c8dc','#9898b4'];
+
+function spawnC(n) {
+  for (let i = 0; i < n; i++) {
+    pieces.push({
+      x: Math.random() * cv.width, y: -10,
+      w: Math.random() * 11 + 5, h: Math.random() * 5 + 3,
+      color: COLS[Math.floor(Math.random() * COLS.length)],
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - .5) * .13,
+      vx: (Math.random() - .5) * 3.5,
+      vy: Math.random() * 2.5 + 1.5,
+    });
+  }
+}
+function animC() {
+  if (!cRunning) return;
+  cx.clearRect(0, 0, cv.width, cv.height);
+  pieces = pieces.filter(p => p.y < cv.height + 30);
+  pieces.forEach(p => {
+    p.x += p.vx; p.y += p.vy; p.rot += p.rotV;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot);
+    cx.globalAlpha = .9; cx.fillStyle = p.color;
+    cx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+    cx.restore();
+  });
+  if (pieces.length === 0) { cRunning = false; cx.clearRect(0,0,cv.width,cv.height); }
+  else requestAnimationFrame(animC);
+}
+function launchConfetti() {
+  if (!cRunning) { cRunning = true; animC(); }
+  spawnC(280);
+}
+function boom() {
+  launchConfetti();
+  setTimeout(launchConfetti, 600);
+  setTimeout(launchConfetti, 1300);
+}
+
+/* ─── Toast ─── */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
